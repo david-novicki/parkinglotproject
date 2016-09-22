@@ -1,4 +1,4 @@
 ## Server
 
 - 1. Endpoint 1: /license x-form-urlencoded platenumber && status(entering or exiting)
-- 1. Endpoint 2: /spot x-form-urlencoded spotnumber && status(empty or full)
+- 2. Endpoint 2: /spot x-form-urlencoded spotnumber && status(empty or full)
