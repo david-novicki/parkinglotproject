@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parker Web Client</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+  </head>
+  <body ng-app="myApp" ng-controller="myController">
+    <table border="1">
+      <tr ng-repeat="data in myData">
+        <td>{{data.status}}</td>
+      </tr>
+    </table>
+
+    <script src="main.js"></script>
+  </body>
+</html>
