@@ -2,22 +2,97 @@
 <html>
   <head>
     <title>Parker Web Client</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="node_modules/angular-material/angular-material.min.css" />
     <link rel="stylesheet" href="css/app.css" />
   </head>
-  <body ng-app="myApp" ng-controller="myController" layout="column">
-    <md-toolbar id="toolbar">
+  <body ng-app="WebApp" ng-controller="AppController" layout="column">
+    <md-toolbar class="md-default" layout="row">
       <h3>Parker</h3>
     </md-toolbar>
 
-    <div class="container" layout="row" flex="">
-      <md-button id="content" ng-click="continue()" flex="">
-        <h2>WELCOME</h2>
-        <p>Press to continue</p>
-        <p ng-repeat="data in myData">
-          {{data}}
-        </p>
-      </md-button>
+    <div layout="column" flex>
+      <md-content>
+        <md-tabs md-selected="data.selectedIndex" md-align-tabs="bottom" layout-fill flex>
+          <md-tab id="tab1" ng-disabled="true">
+            <md-tab-label>Welcome</md-tab-label>
+            <md-tab-body>
+              <md-button ng-click="requestSpotNumber()" layout-fill layout="column">
+                <p class="md-display-4">Welcome</p>
+                <p class="md-display-1">Press to Continue</p>
+              </md-button>
+            </md-tab-body>
+          </md-tab>
+          <md-tab id="tab2" ng-disabled="true">
+            <md-tab-label>Spot #</md-tab-label>
+            <md-tab-body>
+              <md-content style="text-align: center" layout-fill>
+                <p class="md-display-3">Proceed to Spot</p>
+                <p class="md-display-4">#1001</p>
+                <section layout="row" layout-sm="column" layout-align="center center">
+                  <md-button class="md-raised" ng-click="reset()">
+                    <div layout="column" layout-padding layout-margin layout-fill>
+                      <div layout="row" layout-sm="column" layout-align="space-around">
+                        <md-progress-circular class="md-accent" md-mode="determinate" value="{{data.resetTimerValue}}"></md-progress-circular>
+                      </div>
+                      <p class="md-display-2">OK</p>
+                    </div>
+                  </md-button>
+                </section>
+              </md-content>
+            </md-tab-body>
+          </md-tab>
+          <md-tab id="tab3" ng-disabled="true">
+            <md-tab-label>Invalid</md-tab-label>
+            <md-tab-body>
+              <md-content style="text-align: center" layout-fill>
+                <p class="md-display-3">Invalid License Plate</p>
+                <section layout="column" layout-sm="column" layout-align="center center">
+                  <md-button class="md-raised" ng-click="getSpot()">
+                    <div layout="row" layout-padding layout-margin layout-fill>
+                      <p class="md-display-2">Get Spot</p>
+                    </div>
+                  </md-button>
+                  <md-button class="md-raised" ng-click="reset()">
+                    <div layout="row" layout-padding layout-margin layout-fill>
+                      <div layout="row" layout-sm="column" layout-align="space-around">
+                        <md-progress-circular class="md-accent" md-mode="determinate" value="{{data.resetTimerValue}}"></md-progress-circular>
+                      </div>
+                      <p class="md-display-2">OK</p>
+                    </div>
+                  </md-button>
+                </section>
+              </md-content>
+            </md-tab-body>
+          </md-tab>
+          <md-tab id="tab4" ng-disabled="true">
+            <md-tab-label>Register</md-tab-label>
+            <md-tab-body>
+              <md-content style="text-align: center" layout-fill>
+                <section layout="column" layout-sm="column" layout-align="center center" style="margin-top: 40px">
+
+                  <md-content md-theme="input" layout-gt-sm="row" layout-padding>
+                    <md-input-container class="md-block" flex-gt-sm>
+                      <!-- <i class="material-icons" style="font-size: 24pt;">phone</i> -->
+                      <input ng-model="user.phone" placeholder="Phone Number">
+                    </md-input-container>
+                  </md-content>
+
+                  <md-button class="md-raised" ng-click="reset()">
+                    <div layout="row" layout-padding layout-margin layout-fill>
+                      <div layout="row" layout-sm="column" layout-align="space-around">
+                        <md-progress-circular class="md-accent" md-mode="determinate" value="{{data.resetTimerValue}}"></md-progress-circular>
+                      </div>
+                      <p class="md-display-2">Cancel</p>
+                    </div>
+                  </md-button>
+                </section>
+              </md-content>
+            </md-tab-body>
+          </md-tab>
+        </md-tabs>
+      </md-content>
     </div>
 
     <script src="node_modules/angular/angular.min.js"></script>

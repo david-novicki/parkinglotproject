@@ -1,15 +1,10 @@
 html, body {
   font-family: 'Roboto', sans-serif;
   font-size: 14pt;
-  height: 100%;
   margin: 0;
   padding: 0;
-  color: rgb(157, 165, 180);
-  background-color: rgb(33, 37, 43);
-}
-
-#toolbar {
-  background-color: rgb(44, 49, 58);
+  color: #fff;
+  /*background-color: #000;*/
 }
 
 md-toolbar h3 {
@@ -17,8 +12,8 @@ md-toolbar h3 {
   font-weight: 500;
 }
 
-#content {
-  padding-left: 40px;
-  padding-right: 40px;
-  padding-top: 5px;
+md-content {
+  height: 100%;
+  /*background-color: rgb(33, 37, 43);*/
+  color: #fff;
 }
