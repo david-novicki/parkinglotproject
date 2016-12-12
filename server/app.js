@@ -23,8 +23,10 @@ app.get('/', function(req,res){
 
 // });
 app.post('/license', function(req, res) {
+
     var plate = req.body.platenumber;
     var status = req.body.status;
+
     var isValid = false;
     if (plate && status) {
         isValid = true;
