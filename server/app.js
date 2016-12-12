@@ -1,6 +1,8 @@
 var express = require('express');
-var bodyparser = require('body-parser');
 var app = express();
+var server = require('http').createServer(app);
+var bodyparser = require('body-parser');
+var io = require('socket.io')(server);
 
 var port = process.env.PORT || 8080;
 
@@ -35,9 +37,17 @@ app.post('/license', function(req, res) {
     var isValid = false;
     if (plate && status) {
         isValid = true;
+        io.sockets.emit('new-spot', { message: '1001' });
+    } else {
+        socket.emit('failed-read', { message: 'Failed to read license plate' })
     }
-
+    
     res.json({ platenumber: plate, status: status, isvalid: isValid, online: true });
+});
+
+app.post('/reading-plate', function(req, res) {
+    socket.emit('reading-plate', { message: 'Reading plate...' });
+    res.send();
 });
 
 app.post('/spot', function(req, res) {
@@ -61,5 +71,13 @@ app.post('/phone', function(req, res) {
     res.json({ number: number, status: isValid, online: true });
 });
 
-app.listen(port);
+io.on('connection', function (socket) {
+    //tests below
+    socket.emit('reading-plate', { message: 'Reading plate...' });
+    socket.emit('new-spot', { message: '1001' });
+    socket.emit('failed-read', { message: 'Failed to read license plate' })
+});
+
+
+server.listen(port);
 console.log('Hosted at http://localhost:' + port);
