@@ -7,7 +7,7 @@ var serverURL = "http://localhost:8080";
 
 var WebApp = angular.module("WebApp", ['ngMaterial']).config(AppConfig).controller("AppController", AppController);
 
-function AppController($scope, $interval){
+function AppController($scope, $interval, $http){
   $scope.data = {
     selectedIndex: 0,
     resetTimerValue: 100,
@@ -16,6 +16,10 @@ function AppController($scope, $interval){
 
   $scope.requestSpotNumber = function(){
     //// Request Spot From Server
+
+    $http.post(serverURL + "/spot", {}).success(function(response){
+      $scope.httpData = response;
+    });
 
     //// If Server Responds With Spot #
     // $scope.data.selectedIndex = 1;
@@ -26,7 +30,20 @@ function AppController($scope, $interval){
     $scope.resetTimerTick();
   };
 
+  $scope.sendPhoneNumber = function(){
+    //// Send Phone Number To Server
+
+    $http.post(serverURL + "/phone", {'number': $scope.phone}).success(function(response){
+      $scope.httpData = response;
+    });
+
+    //// Responds With Spot #
+    $scope.data.selectedIndex = 1;
+    $scope.resetTimerTick();
+  };
+
   $scope.reset = function(){
+    $scope.phone = "";
     $scope.data.selectedIndex = 0;
   };
 
@@ -46,6 +63,21 @@ function AppController($scope, $interval){
         $interval.cancel(resetInterval);
       }
     }, $scope.data.resetTimerMaxMS/100);
+  };
+
+  $scope.phone = "";
+  $scope.inputAdd = function(val){
+    $scope.phone += val;
+    $scope.inputChange();
+  }
+
+  $scope.inputBackspace = function(){
+    $scope.phone = $scope.phone.slice(0, -1);
+    $scope.inputChange();
+  }
+
+  $scope.inputChange = function(){
+    $scope.data.resetTimerValue = 100;
   };
 }
 
@@ -68,14 +100,3 @@ function AppConfig($mdThemingProvider){
       'default': 'A700'
     }).dark();
 }
-
-// WebApp.controller("myController", function($scope, $http){
-//   // $http.post(serverURL + "/license", {}).success(function(response){
-//   //   $scope.myData = response;
-//   // });
-//   $scope.continue = function(){
-//     $http.get(serverURL + "/").success(function(response){
-//       $scope.myData = response;
-//     });
-//   };
-// });

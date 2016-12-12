@@ -32,7 +32,7 @@
                 <p class="md-display-4">#1001</p>
                 <section layout="row" layout-sm="column" layout-align="center center">
                   <md-button class="md-raised" ng-click="reset()">
-                    <div layout="column" layout-padding layout-margin layout-fill>
+                    <div layout="row" layout-padding layout-margin layout-fill>
                       <div layout="row" layout-sm="column" layout-align="space-around">
                         <md-progress-circular class="md-accent" md-mode="determinate" value="{{data.resetTimerValue}}"></md-progress-circular>
                       </div>
@@ -74,19 +74,58 @@
 
                   <md-content md-theme="input" layout-gt-sm="row" layout-padding>
                     <md-input-container class="md-block" flex-gt-sm>
-                      <!-- <i class="material-icons" style="font-size: 24pt;">phone</i> -->
-                      <input ng-model="user.phone" placeholder="Phone Number">
+                      <input class="md-display-1" ng-model="phone" ng-change="inputChange()" placeholder="Phone Number">
                     </md-input-container>
                   </md-content>
-
-                  <md-button class="md-raised" ng-click="reset()">
-                    <div layout="row" layout-padding layout-margin layout-fill>
-                      <div layout="row" layout-sm="column" layout-align="space-around">
-                        <md-progress-circular class="md-accent" md-mode="determinate" value="{{data.resetTimerValue}}"></md-progress-circular>
-                      </div>
-                      <p class="md-display-2">Cancel</p>
-                    </div>
-                  </md-button>
+                  <div layout="column" class="numberpad">
+                    <table>
+                      <tr>
+                        <td><md-button class="md-raised" ng-click="inputAdd('1')"><p class="md-display-0">1</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputAdd('2')"><p class="md-display-0">2</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputAdd('3')"><p class="md-display-0">3</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputBackspace()"><i class="material-icons" layout-padding style="font-size: 32pt;">backspace</i></md-button></td>
+                      </tr>
+                      <tr>
+                        <td><md-button class="md-raised" ng-click="inputAdd('4')"><p class="md-display-0">4</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputAdd('5')"><p class="md-display-0">5</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputAdd('6')"><p class="md-display-0">6</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputAdd(' ')"><p class="md-display-0">space</p></md-button></td>
+                      </tr>
+                      <tr>
+                        <td><md-button class="md-raised" ng-click="inputAdd('7')"><p class="md-display-0">7</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputAdd('8')"><p class="md-display-0">8</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputAdd('9')"><p class="md-display-0">9</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputAdd('-')"><p class="md-display-0">-</p></md-button></td>
+                      </tr>
+                      <tr>
+                        <td><md-button class="md-raised" ng-click="inputAdd('*')"><p class="md-display-0">*</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputAdd('0')"><p class="md-display-0">0</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputAdd('#')"><p class="md-display-0">#</p></md-button></td>
+                        <td><md-button class="md-raised" ng-click="inputAdd('.')"><p class="md-display-0">.</p></md-button></td>
+                      </tr>
+                    </table>
+                    <table>
+                      <tr>
+                        <td>
+                          <md-button class="md-raised" ng-click="reset()">
+                            <div layout="row" layout-padding layout-margin layout-fill>
+                              <div layout="row" layout-sm="column" layout-align="space-around">
+                                <md-progress-circular class="md-accent" md-mode="determinate" value="{{data.resetTimerValue}}"></md-progress-circular>
+                              </div>
+                              <p class="md-display-1">Cancel</p>
+                            </div>
+                          </md-button>
+                        </td>
+                        <td>
+                          <md-button class="md-raised" ng-click="sendPhoneNumber()">
+                            <div layout="row" layout-padding layout-margin layout-fill>
+                              <p class="md-display-3">OK</p>
+                            </div>
+                          </md-button>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
                 </section>
               </md-content>
             </md-tab-body>
