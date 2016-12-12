@@ -7,6 +7,12 @@ var port = process.env.PORT || 8080;
 app.use(bodyparser.urlencoded({ extended: false }));// use body parser so we can get info from POST and/or URL parameters
 app.use(bodyparser.json());
 
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.get('/', function(req,res){
     res.json({ status: true });
 });
@@ -23,6 +29,7 @@ app.post('/license', function(req, res) {
     if (plate && status) {
         isValid = true;
     }
+
     res.json({ platenumber: plate, status: status, isvalid: isValid, online: true });
 });
 
@@ -33,6 +40,7 @@ app.post('/spot', function(req, res) {
     if (spot && status) {
         isValid = true;
     }
+
     res.json({ spotnumber: spot, status: status, isvalid: isValid, online: true });
 });
 
