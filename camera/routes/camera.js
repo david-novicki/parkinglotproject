@@ -1,17 +1,20 @@
 var parse_license = require('../utilities/parse_license.js');
+var nodeWebcam = require('node-webcam');
 plates = [];
 
-function getLicensePlate(image, state, country, status){
+function getLicensePlate(image, state, country, status) {
 
-    if (status == 'entering'){
+    parse_license.identify('0', '../utilities/ea7the.jpg');
+
+    if (status == 'entering') {
         plate = parse_license.parsePlate();
         plates.push(plate);
     }
-    else{
+    else {
         if (plates.length > 0)
             plate = plates.shift();
         else
-            return {error: 'Error: No cars in system to exit.'};
+            return { error: 'Error: No cars in system to exit.' };
     }
 
     return data = {
@@ -21,3 +24,6 @@ function getLicensePlate(image, state, country, status){
     }
 }
 exports.getLicensePlate = getLicensePlate;
+
+
+
