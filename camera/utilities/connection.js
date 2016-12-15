@@ -3,11 +3,11 @@ var config = require('../config.js').config;
 
 function sendPlateToApi(plate, status) {
     
-    console.log('\nplate number:', plate.id);
-    console.log('entering/exiting:', status);
+    //console.log('\nplate number:', plate);
+    //console.log('entering/exiting:', status);
 
     var data = {
-        platenumber: plate.id,
+        platenumber: plate,
         status: status // entering or exiting
     }
 
@@ -25,6 +25,5 @@ function sendPlateToApi(plate, status) {
             console.log('successfully parsed and sent to main api');
         }
     });
-
 }
 exports.sendPlateToApi = sendPlateToApi;

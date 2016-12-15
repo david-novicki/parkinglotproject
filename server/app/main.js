@@ -1,3 +1,4 @@
+
 /**
  * @author Chris Swenson
  * @version 1.0.0
@@ -31,94 +32,169 @@ WebApp.factory('socket', function ($rootScope) {
   };
 });
 
+// Page Enumeration
+var Page = {
+  WELCOME: 0,
+  READING_PLATE: 1,
+  SPOT: 2,
+  FAILED: 3,
+  PHONE: 4
+};
+
+// Timer Object Structure
+var Timer = function () {
+  this.isActive = false;
+  this.default = 100;
+  this.value = this.default;
+  this.tickValue = -1;
+  this.maxMS = 60000;
+  this.tick = function () {
+    if (this.isActive) {
+      this.value += this.tickValue;
+    }
+  }
+  this.reset = function () {
+    this.value = this.default;
+  };
+  this.setActive = function (bool) {
+    this.isActive = bool;
+  }
+  this.isFinished = function () {
+    return (this.value <= 0);
+  };
+};
+
+// Main AngularJS Controller
 WebApp.controller("AppController", function AppController($scope, $interval, $http, socket) {
 
-  //server pushed down a notification that we are currently reading the plate
+  //// Initialize Scope Data and Data Functions
+  $scope.phoneModel = "";
+  $scope.data = {
+    currentPage: 0,
+    spotNumber: "NaN",
+    timer: new Timer()
+  };
+  $scope.setPage = function (page) {
+    $scope.data.currentPage = page;
+
+    if (page != Page.WELCOME) {
+      $scope.data.timer.setActive(true);
+    } else {
+      $scope.data.timer.setActive(false);
+    }
+    $scope.data.timer.reset();
+    $scope.phoneModel = "";
+  };
+
+  //// Initialize Timer Ticker
+  $interval(function () {
+    if (!$scope.data.timer.isFinished()) {
+      $scope.data.timer.tick();
+    } else {
+      $scope.data.timer.reset();
+      $scope.onTimerFinished();
+    }
+  }, $scope.data.timer.maxMS / 100);
+
+  //// Timer Events
+  $scope.onTimerFinished = function () {
+    $scope.setPage(Page.WELCOME);
+  };
+
+  //// Socket.io Server Pushed Events
+  // Server pushed down a notification that we are currently reading the plate
   socket.on('reading-plate', function (data) {
     console.log('reading-plate', data);
+    $scope.setPage(Page.READING_PLATE);
   });
 
-  //server pushed down a read plate number
+  // Server pushed down a read plate number
   socket.on('new-spot', function (data) {
     console.log('new-spot', data);
+    $scope.data.spotNumber = data.message;
+    $scope.setPage(Page.SPOT);
     //$scope.requestSpotNumber();
   });
 
-  //server pushed down a failed read of license plate
+  // Server pushed down a failed read of license plate
   socket.on('failed-read', function (data) {
     console.log('failed-read', data);
+    $scope.setPage(Page.FAILED);
   });
 
-  $scope.data = {
-    selectedIndex: 0,
-    resetTimerValue: 100,
-    resetTimerMaxMS: 60000
+  //// Web Client Button Events
+  $scope.onWelcomePressed = function () {
+    $scope.setPage(Page.PHONE);
   };
 
-  $scope.requestSpotNumber = function () {
-    //// Request Spot From Server
-
-    $http.post(serverURL + "/spot", {}).then(function (response) {
-      $scope.httpData = response;
-    });
-
-    //// If Server Responds With Spot #
-    // $scope.data.selectedIndex = 1;
-    // $scope.resetTimerTick();
-
-    //// Else If Server Responds With Invalid License Plate
-    $scope.data.selectedIndex = 2;
-    $scope.resetTimerTick();
+  $scope.onReadingPlateCancel = function () {
+    $scope.onTimerFinished();
   };
 
-  $scope.sendPhoneNumber = function () {
-    //// Send Phone Number To Server
-
-    $http.post(serverURL + "/phone", { 'number': $scope.phone }).then(function (response) {
-      $scope.httpData = response;
-    });
-
-    //// Responds With Spot #
-    $scope.data.selectedIndex = 1;
-    $scope.resetTimerTick();
+  $scope.onSpotOkPressed = function () {
+    $scope.onTimerFinished();
   };
 
-  $scope.reset = function () {
-    $scope.phone = "";
-    $scope.data.selectedIndex = 0;
+  $scope.onFailedOkPressed = function () {
+    $scope.onTimerFinished();
   };
 
-  $scope.getSpot = function () {
-    $scope.data.selectedIndex = 3;
-    $scope.data.resetTimerValue = 100;
+  $scope.onFailedGetSpotPressed = function () {
+    $scope.setPage(Page.PHONE);
   };
 
-  $scope.resetTimerTick = function () {
-    $scope.data.resetTimerValue = 100;
-
-    var resetInterval = $interval(function () {
-      if ($scope.data.selectedIndex != 0 && $scope.data.resetTimerValue > 0) {
-        $scope.data.resetTimerValue--;
+  $scope.onPhoneOkPressed = function () {
+    $http.post(serverURL + "/phone", { 'number': $scope.phoneModel }).then(function (response) {
+      //console.log(response)
+      if (response.data.status) {
+        $scope.data.spotNumber = response.data.spot;
+        $scope.setPage(Page.SPOT);
       } else {
-        $scope.reset();
-        $interval.cancel(resetInterval);
+        //swal('Error', 'No reservation exists with ' + $scope.phoneModel, 'error');
+        swal({
+          title: "Not Found",
+          text: "No reservation exists with " + $scope.phoneModel +
+          ". Would you like to make one?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes!",
+          html: false
+        }, function () {
+          
+          $http.post(serverURL + "/spot", { number: $scope.phoneModel, status: 'entering' }).then(function(response){
+            console.log(response);
+            if(response.data.isvalid) {
+              $scope.data.spotNumber = response.data.spotnumber;
+              $scope.setPage(Page.SPOT);
+            } else {
+              swal('Error', 'The number provided was invalid.', 'error');
+            }
+          }, function(error){
+            swal('Error', 'There was an error processing your request.', 'error');
+          })
+        });
       }
-    }, $scope.data.resetTimerMaxMS / 100);
+    }, function (error) {
+      swal('Error', 'An error occured while processing.')
+    });
   };
 
-  $scope.phone = "";
-  $scope.inputAdd = function (val) {
-    $scope.phone += val;
-    $scope.inputChange();
-  }
+  $scope.onPhoneCancelPressed = function () {
+    $scope.onTimerFinished();
+  };
 
-  $scope.inputBackspace = function () {
-    $scope.phone = $scope.phone.slice(0, -1);
-    $scope.inputChange();
-  }
+  $scope.onPhoneInputChange = function () {
+    $scope.data.timer.reset();
+  };
 
-  $scope.inputChange = function () {
-    $scope.data.resetTimerValue = 100;
+  $scope.onPhoneInputAdd = function (val) {
+    $scope.phoneModel += val;
+    $scope.onPhoneInputChange();
+  };
+
+  $scope.onPhoneInputBackspace = function () {
+    $scope.phoneModel = $scope.phoneModel.slice(0, -1);
+    $scope.onPhoneInputChange();
   };
 });
 
