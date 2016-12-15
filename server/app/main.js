@@ -41,24 +41,24 @@ var Page = {
 };
 
 // Timer Object Structure
-var Timer = function(){
+var Timer = function () {
   this.isActive = false;
   this.default = 100;
   this.value = this.default;
   this.tickValue = -1;
   this.maxMS = 60000;
-  this.tick = function(){
-    if(this.isActive){
+  this.tick = function () {
+    if (this.isActive) {
       this.value += this.tickValue;
     }
   }
-  this.reset = function(){
+  this.reset = function () {
     this.value = this.default;
   };
-  this.setActive = function(bool){
+  this.setActive = function (bool) {
     this.isActive = bool;
   }
-  this.isFinished = function(){
+  this.isFinished = function () {
     return (this.value <= 0);
   };
 };
@@ -73,12 +73,12 @@ WebApp.controller("AppController", function AppController($scope, $interval, $ht
     spotNumber: "NaN",
     timer: new Timer()
   };
-  $scope.setPage = function(page){
+  $scope.setPage = function (page) {
     $scope.data.currentPage = page;
 
-    if(page != Page.WELCOME){
+    if (page != Page.WELCOME) {
       $scope.data.timer.setActive(true);
-    }else{
+    } else {
       $scope.data.timer.setActive(false);
     }
     $scope.data.timer.reset();
@@ -86,17 +86,17 @@ WebApp.controller("AppController", function AppController($scope, $interval, $ht
   };
 
   //// Initialize Timer Ticker
-  $interval(function(){
-    if( !$scope.data.timer.isFinished() ){
+  $interval(function () {
+    if (!$scope.data.timer.isFinished()) {
       $scope.data.timer.tick();
-    }else{
+    } else {
       $scope.data.timer.reset();
       $scope.onTimerFinished();
     }
   }, $scope.data.timer.maxMS / 100);
 
   //// Timer Events
-  $scope.onTimerFinished = function(){
+  $scope.onTimerFinished = function () {
     $scope.setPage(Page.WELCOME);
   };
 
@@ -122,67 +122,76 @@ WebApp.controller("AppController", function AppController($scope, $interval, $ht
   });
 
   //// Web Client Button Events
-  $scope.onWelcomePressed = function(){
-    $http.post(serverURL + "/spot", {'spotnumber': true, 'status': true}).then(function (response) {
-      if(response.isvalid == true){
-        $scope.data.spotNumber = response.spotnumber;
-        $scope.setPage(Page.SPOT);
-      }else{
-        $scope.setPage(Page.FAILED);
-      }
-    });
-
-    $scope.setPage(Page.FAILED);
-  };
-
-  $scope.onReadingPlateCancel = function(){
-    $scope.onTimerFinished();
-  };
-
-  $scope.onSpotOkPressed = function(){
-    $scope.onTimerFinished();
-  };
-
-  $scope.onFailedOkPressed = function(){
-    $scope.onTimerFinished();
-  };
-
-  $scope.onFailedGetSpotPressed = function(){
+  $scope.onWelcomePressed = function () {
     $scope.setPage(Page.PHONE);
   };
 
-  $scope.onPhoneOkPressed = function(){
-    $http.post(serverURL + "/phone", {'number': $scope.phoneModel}).then(function (response) {
-      if(response.isvalid == true){
-        $http.post(serverURL + "/spot", {'spotnumber': true, 'status': true}).then(function (response) {
-          if(response.isvalid == true){
-            $scope.data.spotNumber = response.spotnumber;
-            $scope.setPage(Page.SPOT);
-          }else{
-            $scope.setPage(Page.FAILED);
-          }
-        });
-      }else{
-        $scope.setPage(Page.FAILED);
-      }
-    });
-    $scope.setPage(Page.FAILED);
-  };
-
-  $scope.onPhoneCancelPressed = function(){
+  $scope.onReadingPlateCancel = function () {
     $scope.onTimerFinished();
   };
 
-  $scope.onPhoneInputChange = function(){
+  $scope.onSpotOkPressed = function () {
+    $scope.onTimerFinished();
+  };
+
+  $scope.onFailedOkPressed = function () {
+    $scope.onTimerFinished();
+  };
+
+  $scope.onFailedGetSpotPressed = function () {
+    $scope.setPage(Page.PHONE);
+  };
+
+  $scope.onPhoneOkPressed = function () {
+    $http.post(serverURL + "/phone", { 'number': $scope.phoneModel }).then(function (response) {
+      //console.log(response)
+      if (response.data.status) {
+        $scope.data.spotNumber = response.data.spot;
+        $scope.setPage(Page.SPOT);
+      } else {
+        //swal('Error', 'No reservation exists with ' + $scope.phoneModel, 'error');
+        swal({
+          title: "Not Found",
+          text: "No reservation exists with " + $scope.phoneModel +
+          ". Would you like to make one?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes!",
+          html: false
+        }, function () {
+          
+          $http.post(serverURL + "/spot", { number: $scope.phoneModel, status: 'entering' }).then(function(response){
+            console.log(response);
+            if(response.data.isvalid) {
+              $scope.data.spotNumber = response.data.spotnumber;
+              $scope.setPage(Page.SPOT);
+            } else {
+              swal('Error', 'The number provided was invalid.', 'error');
+            }
+          }, function(error){
+            swal('Error', 'There was an error processing your request.', 'error');
+          })
+        });
+      }
+    }, function (error) {
+      swal('Error', 'An error occured while processing.')
+    });
+  };
+
+  $scope.onPhoneCancelPressed = function () {
+    $scope.onTimerFinished();
+  };
+
+  $scope.onPhoneInputChange = function () {
     $scope.data.timer.reset();
   };
 
-  $scope.onPhoneInputAdd = function(val){
+  $scope.onPhoneInputAdd = function (val) {
     $scope.phoneModel += val;
     $scope.onPhoneInputChange();
   };
 
-  $scope.onPhoneInputBackspace = function(){
+  $scope.onPhoneInputBackspace = function () {
     $scope.phoneModel = $scope.phoneModel.slice(0, -1);
     $scope.onPhoneInputChange();
   };

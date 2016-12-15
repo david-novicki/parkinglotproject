@@ -51,11 +51,13 @@ app.post('/reading-plate', function(req, res) {
 });
 
 app.post('/spot', function(req, res) {
-    var spot = req.body.spotnumber;
+    var number = req.body.number;
     var status = req.body.status;
+    var spot;
     var isValid = false;
-    if (spot && status) {
+    if (number && status) {
         isValid = true;
+        spot = 5001;
     }
 
     res.json({ spotnumber: spot, status: status, isvalid: isValid, online: true });
@@ -63,17 +65,18 @@ app.post('/spot', function(req, res) {
 
 app.post('/phone', function(req, res) {
     var number = req.body.number;
+    console.log(number);
+    var spot = 2001;
     var isValid = false;
-    if (number) {
+    if (number && number == 9168505355) {
         isValid = true;
     }
 
-    res.json({ number: number, status: isValid, online: true });
+    res.json({ spot: spot, number: number, status: isValid, online: true });
 });
 
 io.on('connection', function (socket) {
     //tests below
-    // socket.emit('reading-plate', { message: 'Reading plate...' });
     // setTimeout(function() {
     //     socket.emit('reading-plate', { message: 'Reading plate...' });
     // },3000);
