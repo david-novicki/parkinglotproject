@@ -1,10 +1,9 @@
 var parse_license = require('../utilities/parse_license.js');
-var nodeWebcam = require('node-webcam');
 plates = [];
 
-function getLicensePlate(image, state, country, status) {
+function getLicensePlate(image, status) {
 
-    parse_license.identify('0', '../utilities/ea7the.jpg');
+    parse_license.identify('0', "../" + image);
 
     if (status == 'entering') {
         plate = parse_license.parsePlate();
@@ -18,8 +17,6 @@ function getLicensePlate(image, state, country, status) {
     }
 
     return data = {
-        state: state,
-        country: country,
         id: plate
     }
 }
