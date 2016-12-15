@@ -11,11 +11,11 @@ app.use(bp.urlencoded({ extended: false }));
 app.use(bp.json());
 app.use('/', express.static(path.join(__dirname, '/')));
 var port = 8081;
+var imagePath = "plate.png"
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../camera', 'index.html'));
 });
-
 
 app.get('/analyzePlate/:status', function (req, res) {
 
@@ -33,25 +33,18 @@ app.get('/analyzePlate/:status', function (req, res) {
 });
 
 app.post('/newImage', function (req, res) {
-    var raw = req.body.image;
-    console.log('\n\nraw:', raw);
-    console.log(raw);
-    console.log('[POST]newImage: Received new image');
-    var image = raw.split(',')[1];
+    var image = req.body.image.split(',')[1];
     image = image.replace(/ /g, '+');
-    //var image;
-    console.log(image)
-    //var base64Data = req.body.image.replace(/^data:image\/png;base64,/, "");
-    //console.log(base64Data);
-    fs.writeFile("plate.png", image, 'base64', function (err) {
+    fs.writeFile(imagePath, image, 'base64', function (err) {
         if (err)
         console.log('Create image err:', err);
     });
+    analyzePlate(imagePath)
 });
 
-function analyzePlate(){
+function analyzePlate(imagePath){
     var status = req.params.status;
-    var plate = camera.getLicensePlate(null, 'ca', 'us', status);
+    var plate = camera.getLicensePlate(imagePath, 'ca', 'us', status);
     if (plate.error) {
         console.log(plate.error)
         res.send(plate.error);
@@ -59,10 +52,7 @@ function analyzePlate(){
         network.sendPlateToApi(plate, status);
         res.send(plate);
     }
-
 }
-
-
 
 app.listen(port);
 console.log("Application now hosted on port: " + port);
