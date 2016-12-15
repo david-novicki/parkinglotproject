@@ -20,6 +20,7 @@ app.get('/', function (req, res) {
 });
 
 app.post('/newImage', function (req, res) {
+    connection.sendParsingToApi();
     var image = req.body.image.split(',')[1];
     image = image.replace(/ /g, '+');
     fs.writeFile(imagePath, image, 'base64', function (err) {

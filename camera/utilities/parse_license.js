@@ -4,6 +4,7 @@ var child;
 function parseImage(image, callback) {
     child = exec('alpr -n 1 ' + image, function (error, stdout, stderr) {
         if (!error) {
+            console.log("\n"+stdout);
             var results = stdout.split('\n');
             if (results) {
                 var plate = results[1].split(' ')[5];
