@@ -34,8 +34,10 @@ function parseResults(results){
     if (results){
         console.log('Found plate:', results);
         connection.sendPlateToApi(results, status);
-    }else
+    }else{
         console.log('No license plate found');
+        connection.sendPlateToApi(null, null);//fail
+    }
 }
 
 app.listen(port);

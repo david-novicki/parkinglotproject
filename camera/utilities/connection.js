@@ -22,7 +22,7 @@ function sendPlateToApi(plate, status) {
             console.log(error);
         }
         else{
-            console.log('successfully parsed and sent to main api');
+            console.log('--> sent to main api');
         }
     });
 }
