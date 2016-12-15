@@ -1,3 +1,4 @@
+
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
@@ -77,17 +78,17 @@ app.post('/phone', function(req, res) {
 
 io.on('connection', function (socket) {
     //tests below
-    // setTimeout(function() {
-    //     socket.emit('reading-plate', { message: 'Reading plate...' });
-    // },3000);
-    // // socket.emit('new-spot', { message: '1001' });
-    // setTimeout(function() {
-    //     socket.emit('new-spot', { message: '1001' });
-    // },6000);
-    // // socket.emit('failed-read', { message: 'Failed to read license plate' })
-    // setTimeout(function() {
-    //     socket.emit('failed-read', { message: 'Failed to read license plate' })
-    // },9000);
+    setTimeout(function() {
+        socket.emit('reading-plate', { message: 'Reading plate...' });
+    },3000);
+    // socket.emit('new-spot', { message: '1001' });
+    setTimeout(function() {
+        socket.emit('new-spot', { message: '1001' });
+    },6000);
+    // socket.emit('failed-read', { message: 'Failed to read license plate' })
+    setTimeout(function() {
+        socket.emit('failed-read', { message: 'Failed to read license plate' })
+    },9000);
 });
 
 

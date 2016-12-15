@@ -1,11 +1,18 @@
-function parsePlate()
-{
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+var exec = require('child_process').exec;
+var child;
 
-    for( var i=0; i < 7; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-        
-    return text;
+function parseImage(image, callback) {
+    child = exec('alpr -n 1 ' + image, function (error, stdout, stderr) {
+        if (!error) {
+            var results = stdout.split('\n');
+            if (results) {
+                var plate = results[1].split(' ')[5];
+                callback(plate);
+            }
+        } else {
+            console.log("openalpr failed");
+            return null;
+        }
+    });
 }
-exports.parsePlate = parsePlate;
+exports.parseImage = parseImage;
