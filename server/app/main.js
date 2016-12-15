@@ -123,7 +123,16 @@ WebApp.controller("AppController", function AppController($scope, $interval, $ht
 
   //// Web Client Button Events
   $scope.onWelcomePressed = function(){
-    $scope.setPage(Page.READING_PLATE);
+    $http.post(serverURL + "/spot", {'spotnumber': true, 'status': true}).then(function (response) {
+      if(response.isvalid == true){
+        $scope.data.spotNumber = response.spotnumber;
+        $scope.setPage(Page.SPOT);
+      }else{
+        $scope.setPage(Page.FAILED);
+      }
+    });
+
+    $scope.setPage(Page.FAILED);
   };
 
   $scope.onReadingPlateCancel = function(){
@@ -144,10 +153,20 @@ WebApp.controller("AppController", function AppController($scope, $interval, $ht
 
   $scope.onPhoneOkPressed = function(){
     $http.post(serverURL + "/phone", {'number': $scope.phoneModel}).then(function (response) {
-      $scope.httpData = response;
+      if(response.isvalid == true){
+        $http.post(serverURL + "/spot", {'spotnumber': true, 'status': true}).then(function (response) {
+          if(response.isvalid == true){
+            $scope.data.spotNumber = response.spotnumber;
+            $scope.setPage(Page.SPOT);
+          }else{
+            $scope.setPage(Page.FAILED);
+          }
+        });
+      }else{
+        $scope.setPage(Page.FAILED);
+      }
     });
-
-    // Server Will Emit "new-spot"
+    $scope.setPage(Page.FAILED);
   };
 
   $scope.onPhoneCancelPressed = function(){

@@ -69,8 +69,6 @@ app.post('/phone', function(req, res) {
     }
 
     res.json({ number: number, status: isValid, online: true });
-
-    io.sockets.emit('new-spot', { message: '1001' });
 });
 
 io.on('connection', function (socket) {
