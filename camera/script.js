@@ -36,7 +36,7 @@ window.onload = function () {
             }
         );
 
-        
+
 
     } else {
         alert('Sorry, your browser does not support getUserMedia');
@@ -46,14 +46,39 @@ window.onload = function () {
 
 
 
-function captureImage(){
-        var canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth * scale;
-        canvas.height = video.videoHeight * scale;
-        canvas.getContext('2d')
-              .drawImage(video, 0, 0, canvas.width, canvas.height);
- 
-        var img = document.createElement("img");
-        img.src = canvas.toDataURL();
-        $output.prepend(img);
-    };
+function captureImage() {
+    console.log('captureimage');
+    var canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth * scale;
+    canvas.height = video.videoHeight * scale;
+    canvas.getContext('2d')
+        .drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    var img = document.createElement("img");
+    img.src = canvas.toDataURL();
+    //console.log(img);
+
+
+    sendImageToServer(img.src);
+};
+
+function sendImageToServer(image) {
+    console.log('image:', image);
+
+   
+
+    var http = new XMLHttpRequest();
+    var url = "http://localhost:8081/newImage";
+    var params = "image=" + image;
+    http.open("POST", url, true);
+
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    http.onreadystatechange = function () {
+        if (http.readyState == 4 && http.status == 200) {
+            alert(http.responseText);
+        }
+    }
+    http.send(params);
+}
+
