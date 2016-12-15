@@ -75,9 +75,18 @@ app.post('/phone', function(req, res) {
 
 io.on('connection', function (socket) {
     //tests below
-    socket.emit('reading-plate', { message: 'Reading plate...' });
-    socket.emit('new-spot', { message: '1001' });
-    socket.emit('failed-read', { message: 'Failed to read license plate' })
+    // socket.emit('reading-plate', { message: 'Reading plate...' });
+    // setTimeout(function() {
+    //     socket.emit('reading-plate', { message: 'Reading plate...' });
+    // },3000);
+    // // socket.emit('new-spot', { message: '1001' });
+    // setTimeout(function() {
+    //     socket.emit('new-spot', { message: '1001' });
+    // },6000);
+    // // socket.emit('failed-read', { message: 'Failed to read license plate' })
+    // setTimeout(function() {
+    //     socket.emit('failed-read', { message: 'Failed to read license plate' })
+    // },9000);
 });
 
 
