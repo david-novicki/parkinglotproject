@@ -1,32 +1,18 @@
-
 var exec = require('child_process').exec;
 var child;
 
-
-
-
-function parsePlate(image) {
-
-    var imagePath = '../plate.jpg';
-    child = exec('alpr -n 1 ' + imagePath, function (error, stdout, stderr) {
+function parseImage(image, callback) {
+    child = exec('alpr -n 1 ' + image, function (error, stdout, stderr) {
         if (!error) {
-            console.log(stdout);
+            var results = stdout.split('\n');
             if (results) {
-                var results = stdout.split('\n');
-                var plate = results[1].split(' ');
-                console.log(plate[5].trim('\y'));
+                var plate = results[1].split(' ')[5];
+                callback(plate);
             }
         } else {
             console.log("openalpr failed");
+            return null;
         }
     });
-
-    // var text = "";
-    // var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    // for (var i = 0; i < 7; i++)
-    //     text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    // return text;
 }
-exports.parsePlate = parsePlate;
+exports.parseImage = parseImage;

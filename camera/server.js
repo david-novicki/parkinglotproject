@@ -1,8 +1,8 @@
 var express = require('express');
 var bp = require('body-parser');
-var camera = require('./routes/camera.js');
+var plateUtils = require('./utilities/parse_license.js');
 var config = require('./config.js');
-var network = require('./routes/network.js');
+var connection = require('./utilities/connection.js');
 var path = require('path');
 var fs = require('fs');
 
@@ -11,25 +11,12 @@ app.use(bp.urlencoded({ extended: false }));
 app.use(bp.json());
 app.use('/', express.static(path.join(__dirname, '/')));
 var port = 8081;
+
 var imagePath = "plate.png"
+var status = 'entering' //debug
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../camera', 'index.html'));
-});
-
-app.get('/analyzePlate/:status', function (req, res) {
-
-    var status = req.params.status;
-    var plate = camera.getLicensePlate(null, 'ca', 'us', status);
-    if (plate.error) {
-        console.log(plate.error)
-        res.send(plate.error);
-    } else {
-        network.sendPlateToApi(plate, status);
-        res.send(plate);
-    }
-
-
 });
 
 app.post('/newImage', function (req, res) {
@@ -39,19 +26,16 @@ app.post('/newImage', function (req, res) {
         if (err)
         console.log('Create image err:', err);
     });
-    analyzePlate(imagePath)
+    plateUtils.parseImage(imagePath, parseResults);
 });
 
-function analyzePlate(imagePath){
-    var status = req.params.status;
-    var plate = camera.getLicensePlate(imagePath, 'ca', 'us', status);
-    if (plate.error) {
-        console.log(plate.error)
-        res.send(plate.error);
-    } else {
-        network.sendPlateToApi(plate, status);
-        res.send(plate);
-    }
+// plate parse callback
+function parseResults(results){
+    if (results){
+        console.log('Found plate:', results);
+        connection.sendPlateToApi(results, status);
+    }else
+        console.log('No license plate found');
 }
 
 app.listen(port);
