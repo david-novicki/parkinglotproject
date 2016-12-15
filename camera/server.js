@@ -2,13 +2,18 @@ var express = require('express');
 var bp = require('body-parser');
 var camera = require('./routes/camera.js');
 var config = require('./config.js');
-var network = require('./routes/network.js')
+var network = require('./routes/network.js');
+var path = require('path');
 
 var app = express();
 app.use(bp.urlencoded({ extended: false }));
 app.use(bp.json());
-
+app.use('/', express.static(path.join(__dirname, '/')));
 var port = 8081;
+
+app.get('/', function(req, res){
+    res.sendFile(path.join(__dirname,'../camera', 'index.html'));
+});
 
 
 app.get('/analyzePlate/:status',function(req,res){
