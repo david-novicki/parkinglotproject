@@ -1,17 +1,17 @@
 
-var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var bodyparser = require('body-parser');
-var io = require('socket.io')(server);
+const express = require('express');
+const app = express();
+const server = require('http').createServer(app);
+const bodyparser = require('body-parser');
+const io = require('socket.io')(server);
 
-var port = process.env.PORT || 8080;
+const port = process.env.PORT || 8080;
 
 app.use(bodyparser.urlencoded({ extended: false }));// use body parser so we can get info from POST and/or URL parameters
 app.use(bodyparser.json());
 app.use(express.static(__dirname + "/"));
 
-var allowCrossDomain = function(req, res, next) {
+const allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
@@ -32,10 +32,10 @@ app.get('/', function(req,res){
 
 app.post('/license', function(req, res) {
 
-    var plate = req.body.platenumber;
-    var status = req.body.status;
+    const plate = req.body.platenumber;
+    const status = req.body.status;
 
-    var isValid = false;
+    let isValid = false;
     if (plate && status) {
         isValid = true;
         io.sockets.emit('new-spot', { message: '1001' });
@@ -52,10 +52,10 @@ app.post('/reading-plate', function(req, res) {
 });
 
 app.post('/spot', function(req, res) {
-    var number = req.body.number;
-    var status = req.body.status;
-    var spot;
-    var isValid = false;
+    const number = req.body.number;
+    const status = req.body.status;
+    let spot;
+    let isValid = false;
     if (number && status) {
         isValid = true;
         spot = 5001;
@@ -65,10 +65,10 @@ app.post('/spot', function(req, res) {
 });
 
 app.post('/phone', function(req, res) {
-    var number = req.body.number;
+    const number = req.body.number;
     console.log(number);
-    var spot = 2001;
-    var isValid = false;
+    const spot = 2001;
+    let isValid = false;
     if (number && number == 9168505355) {
         isValid = true;
     }

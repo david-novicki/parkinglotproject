@@ -1,21 +1,21 @@
-var express = require('express');
-var bp = require('body-parser');
-var config = require('./config.js');
-var network = require('./routes/network.js')
+const express = require('express');
+const bp = require('body-parser');
+const config = require('./config.js');
+const network = require('./routes/network.js')
 
-var app = express();
+const app = express();
 app.use(bp.urlencoded({ extended: false }));
 app.use(bp.json());
 
-var port = 8081;
+const port = 8082;
 
 
 app.get('/sensor/:spot/:status',function(req,res){
     
-    var status = req.params.status;
-    var spot = req.params.spot;
+    const status = req.params.status;
+    const spot = req.params.spot;
     
-    var data = {
+    const data = {
         status: status, 
         spot: spot
     }

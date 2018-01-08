@@ -16,22 +16,34 @@ Parking lot management project using a license plate identifier camera and a web
 Install open-alpr onto linux environment for camera module - license plate recognition to work:
 http://doc.openalpr.com/_sources/compiling.txt
 
-## To Start Camera
-Install dependencies
+## Camera
+The camera uses OpenALPR and a webcam to continously scan license plates as they come into view and load reservations. This information is sent to the central server as the next queued car.
+
+Installation
 
 `
 cd camera/ && npm i && npm start
 `
 
-## To Start Sensor
+Open your browser to localhost:8081 and point webcam in correct direction
+
+## Sensor
+The sensor is an iOT device that sits on each parking spot in the garage. It's job is monitor if each spot is taken or not by magnetic sensors. It relays this information to our central server.
+
+Installation
 
 `
 cd sensor/ && npm i && npm start
 `
 
-## To Start Web Interface
+## Web Interface
+The web interface is the primary contact point for all customers coming into the parking garage. It uses websockets to relay incoming camera data. 
+
+Installation
 
 `
 cd server/ && npm i && npm start
 `
+
+Open your browser and go to localhost:8080
 

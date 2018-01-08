@@ -1,11 +1,11 @@
-var request = require('request');
-var config = require('../config.js').config;
+const request = require('request');
+const config = require('../config.js').config;
 
 function sendStatusToApi(spot, status) {
     
     console.log('empty/full:', status);
 
-    var data = {
+    const data = {
         status: status, 
         spotnumber: spot
     }
