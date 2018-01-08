@@ -1,6 +1,8 @@
 # Parker
 Parking lot management project using a license plate identifier camera and a web interface to find your reserved parking spot. This project works on 3 different code bases to ensure it can be run independently on iOT devices in a parking garage. This project uses AngularJS, Socket.io, ExpressJS, OpenALPR, and Navigator.getUserMedia.
 
+This project is not complete and needs more attention. It will need a database added to API and some hardcoded values to be removed.
+
 ![Home Screen](https://github.com/supercycle91/parkinglotproject/blob/master/images/home.png)
 
 ![Input Phone](https://github.com/supercycle91/parkinglotproject/blob/master/images/phone.png)
