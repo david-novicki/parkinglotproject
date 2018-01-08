@@ -1,7 +1,7 @@
 # Parker
 Parking lot management project using a license plate identifier camera and a web interface to find your reserved parking spot. 
 
-![Home Screen](https://github.com/supercycle91/parkinglotproject/images/home.png)
+![Home Screen](https://github.com/supercycle91/parkinglotproject/blob/master/images/home.png)
 
 ## Installation
 
