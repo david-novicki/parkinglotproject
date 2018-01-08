@@ -1,9 +1,21 @@
-# parkinglotproject
-CSC 131 Parking Lot Automation project
+# Parker
+Parking lot management project using a license plate identifier camera and a web interface to find your reserved parking spot. 
 
-Steps to doing your part:
-- 1. Create folder for your module(cameras, sensors, frontend, server, etc)
-- 2. Write all your code in your own module. Code should exclude dependencies outside of your module folder
+![Home Screen](https://github.com/supercycle91/parkinglotproject/images/home.png)
+
+## Installation
 
 Install open-alpr onto linux environment for camera module - license plate recognition to work:
 http://doc.openalpr.com/_sources/compiling.txt
+
+## To Start Camera
+Install dependencies
+`
+cd camera/ && npm i
+`
+
+`
+cd camera/ && npm start
+`
+## To Start Sensor
+
